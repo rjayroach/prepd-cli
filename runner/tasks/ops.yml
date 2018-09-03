@@ -1,0 +1,42 @@
+---
+- name: 'Load cli vars from {{ config.cli_vars_dir }}'
+  find:
+    paths: '{{ config.cli_vars_dir }}'
+    patterns: '*.yml'
+  register: vars_files
+
+- name: Load and merge cli vars
+  include_tasks: cli-vars.yml
+  with_items: "{{ vars_files.files | map(attribute='path') | list }}"
+  loop_control:
+    loop_var: vars_file
+
+- name: Prompt for user_action
+  prompt:
+    msg:
+      say: "Action ({{ prepd_cli.commands.keys() | sort | join(', ') }})"
+      ask: user_action
+      default: '{{ config.cli_default_action }}'
+  when: prepd_cli.commands.keys() | length > 1
+
+- name: Set user_action to the default when only one command is available
+  set_fact:
+    user_action: '{{ config.cli_default_action }}'
+  when: prepd_cli.commands.keys() | length < 2
+
+- name: Fail if the command is invalid
+  fail:
+    msg: "invalid command '{{ user_action }}'"
+  when: user_action not in prepd_cli.commands.keys()
+
+- set_fact:
+    role_spec: '{{ prepd_cli.config[user_action] | default({}) }}'
+
+- name: "Include the '{{ user_action }}' tasks"
+  include_tasks: '{{ user_action }}.yml'
+  when: prepd_cli.commands[user_action] | length == 0
+
+- name: "Include the '{{ user_action }}/runner' role"
+  include_role:
+    name: '{{ prepd_cli.commands[user_action] }}/runner'
+  when: prepd_cli.commands[user_action] | length > 0

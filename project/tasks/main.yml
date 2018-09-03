@@ -9,12 +9,6 @@
     msg: '{{ spec.project_dir }} already exists'
   when: project_status.stat.exists
 
-- name: 'Ignore the {{ spec.project_dir }} directory'
-  lineinfile:
-    path: '{{ playbook_dir }}/.gitignore'
-    line: '{{ spec.project_dir }}'
-    state: present
-
 - name: Create project directory structure
   file:
     path: '{{ item }}'

@@ -1,4 +1,4 @@
-## {{ spec.project_name }}
+## {{ spec.project_dir }}
 
 ## Running
 
