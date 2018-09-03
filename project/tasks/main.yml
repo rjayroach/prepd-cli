@@ -25,7 +25,6 @@
 
 - name: Copy shared files to the project
   copy:
-    # src: "{{ role_path.split('/')[0:-2] | join('/') }}/{{ item }}"
     src: "{{ playbook_dir }}/{{ item }}"
     dest: '{{ spec.project_dir }}/{{ item }}'
   with_items:
@@ -56,12 +55,6 @@
   copy:
     content: "{{ 999999999999999999999 | random | string + (lookup('pipe', 'date +%s%N')) | to_uuid }}"
     dest: '{{ spec.project_dir }}/.vault-password.txt'
-
-- name: Softlink to the roles directory
-  file:
-    src: ../../roles
-    path: '{{ spec.project_dir }}/roles'
-    state: link
 
 - name: "Initialize the project's git repository"
   command: '{{ item }}'
