@@ -1,0 +1,15 @@
+---
+- debug: var=role_spec
+- debug: var=role_config
+- set_fact:
+    role_spec: '{{ role_spec | default({}) | combine(role_config, recursive=True) }}'
+
+- debug: var=role_spec
+- debug: var=role_config
+- include_tasks: prompt.yml
+  vars:
+    say: '{{ label }}.{{ prompt_item }}'
+    default: '{{ role_spec[prompt_item] }}'
+  with_items: '{{ role_spec._select | default(role_spec.keys()) }}'
+  loop_control:
+    loop_var: prompt_item

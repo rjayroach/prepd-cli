@@ -1,0 +1,21 @@
+---
+- name: Check the current directory for project artifacts
+  lineinfile: 
+    dest: ansible.cfg
+    line: '# prepd-project'
+  check_mode: yes
+  register: presence
+
+- name: Stop if the current directory contains an existing project
+  fail:
+    msg: 'Cannot create a new project inside an existing project'
+  when: not presence.changed
+
+- include_role:
+    name: prepd-cli/prompt
+  vars:
+    role_config: '{{ prepd_cli.config.new }}'
+    label: new
+
+- include_role:
+    name: prepd-cli/project

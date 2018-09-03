@@ -1,0 +1,17 @@
+#jinja2: lstrip_blocks: True
+{% set dbl = '{{' %}
+---
+commands:
+  plugin: {}
+
+config:
+  plugin:
+    packer:
+      role: packer
+      # repo: git@github.com:rjayroach/packer.git
+    terraplate:
+      role: terraplate
+      # repo: git@github.com:rjayroach/terraplate.git
+    prepd:
+      role: prepd
+      # repo: git@github.com:rjayroach/prepd-roles.git

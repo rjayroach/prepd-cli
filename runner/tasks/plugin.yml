@@ -1,0 +1,31 @@
+---
+- prompt:
+    msg:
+      say: "Install plugin ({{ prepd_cli.config.plugin.keys() | sort | join(', ') }})"
+      ask: plugin_name
+      default: '{{ prepd_cli.config.plugin.keys() | sort | first }}'
+
+- name: Fail if the plugin_name is invalid
+  fail:
+    msg: "invalid plugin '{{ plugin_name }}'"
+  when: plugin_name not in prepd_cli.config.plugin.keys()
+
+- name: 'Clone the {{ plugin_name }} plugin repository'
+  git:
+    repo: '{{ prepd_cli.config.plugin[plugin_name].repo }}'
+    dest: '{{ config.roles_directory }}/{{ prepd_cli.config.plugin[plugin_name].role }}'
+  when: prepd_cli.config.plugin[plugin_name].repo is defined
+
+# NOTE: role_spec was passed in as a var to the include_role below but there is an issue/bug
+# that does not allow the prepd-cli/prompt role to use set_fact to set role_spec if it has
+# already been defined as a var from include_role; It works as expected when declared with set_fact here:
+- set_fact:
+    role_spec: '{{ prepd_cli.config[plugin_name] | default({}) }}'
+
+- name: Setup the plugin
+  include_role:
+    name: '{{ prepd_cli.config.plugin[plugin_name].role }}/setup'
+  vars:
+    cli_vars_dir: '{{ config.cli_vars_dir }}'
+    # role_spec is in for prepd/inventory; took out for packer and (i think) vagrant
+    # role_spec: '{{ prepd_cli.config[plugin_name] | default({}) }}'

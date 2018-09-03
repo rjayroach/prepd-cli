@@ -1,0 +1,7 @@
+---
+- include_vars:
+    file: '{{ vars_file }}'
+    name: test
+
+- set_fact:
+    prepd_cli: '{{ prepd_cli | default({}) | combine(test, recursive=True) }}'
