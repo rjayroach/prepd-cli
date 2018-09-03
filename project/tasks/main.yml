@@ -22,24 +22,16 @@
   with_items:
     - '{{ spec.project_dir }}/inventory/local/host_vars'
     - '{{ spec.project_dir }}/cli-vars'
-    - '{{ spec.project_dir }}/action_plugins'
 
 - name: Copy the project base files
   copy:
     src: '{{ role_path }}/files/'
     dest: '{{ spec.project_dir }}'
 
-- name: Copy shared files to the project
+- name: Copy prepd.yml to the project
   copy:
-    src: "{{ playbook_dir }}/{{ item }}"
-    dest: '{{ spec.project_dir }}/{{ item }}'
-  with_items:
-    - prepd.yml
-    - action_plugins/prompt.py
-
-- name: "Set the project's playbook to executable"
-  file:
-    path: '{{ spec.project_dir }}/prepd.yml'
+    src: '{{ playbook_dir }}/prepd.yml'
+    dest: '{{ spec.project_dir }}/prepd.yml'
     mode: 0755
 
 - name: Template inventory/local/host_vars/prepd.yml
