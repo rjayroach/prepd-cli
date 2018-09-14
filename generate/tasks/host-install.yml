@@ -6,9 +6,9 @@
   with_items:
     - repo: git@github.com:rjayroach/prepd-roles.git
       dest: prepd
-    - git@github.com:rjayroach/packer.git
+    - repo: git@github.com:rjayroach/packer.git
       dest: packer
-    - git@github.com:rjayroach/terraplate-playbooks.git
+    - repo: git@github.com:rjayroach/terraplate-playbooks.git
       dest: terraplate
 
 - name: 'Create {{ ansible_env.HOME }}/.prepd'
