@@ -1,0 +1,7 @@
+---
+generate:
+  what: '{{ arg_1 }}'
+  name: '{{ arg_2 }}'
+  types: '{{ arg_3 }}'
+
+project_dir: '{{ playbook_dir }}/projects/{{ generate.name }}'

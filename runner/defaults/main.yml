@@ -1,0 +1,5 @@
+---
+# settings_path: "{{ playbook_dir.split('/')[0:-1] | join('/') }}/settings.yml"
+settings_path: "{{ ansible_env.HOME }}/.prepd/settings.yml"
+
+settings: {}

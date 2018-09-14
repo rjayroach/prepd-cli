@@ -1,0 +1,7 @@
+---
+- include_vars:
+    file: '{{ type }}.yml'
+    name: tdata
+
+- set_fact:
+    template_data: "{{ template_data | default({}) | combine(tdata, recursive=True) }}"

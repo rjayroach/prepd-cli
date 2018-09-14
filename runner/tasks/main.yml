@@ -1,4 +1,13 @@
 ---
+- stat:
+    path: '{{ settings_path }}'
+  register: settings_file
+
+- include_vars:
+    file: '{{ settings_path }}'
+    name: settings
+  when: settings_file.stat.exists
+
 - include_role:
     name: prepd-cli/project
   vars:
@@ -6,5 +15,12 @@
       project_dir: '{{ project_dir }}'
   when: user_action is defined and user_action == 'new'
 
+- include_role:
+    name: prepd-cli/generate
+  vars:
+    spec:
+      project_dir: '{{ project_dir }}'
+  when: user_action is defined and (user_action == 'g' or user_action == 'generate')
+
 - include_tasks: ops.yml
-  when: user_action is not defined or user_action != 'new'
+  when: user_action is not defined or user_action not in ['new', 'g', 'generate']

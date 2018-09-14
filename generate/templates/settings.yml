@@ -1,0 +1,6 @@
+{% set dbl = '{{' %}
+---
+packer:
+  box_dir: '{{ dbl }} playbook_dir }}/.packer/boxes'
+vagrant:
+  box_url_base: '{{ dbl }} playbook_dir }}/.packer/boxes'

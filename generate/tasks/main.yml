@@ -1,0 +1,9 @@
+---
+# - name: Fail if the command is invalid
+#   fail:
+#     msg: "missing argument 'what'"
+#   when: generate is not defined # or arg_2 is not defined
+
+- debug: var=generate
+
+- include_tasks: '{{ generate.what }}.yml'

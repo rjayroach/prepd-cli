@@ -17,12 +17,12 @@
       say: "Action ({{ prepd_cli.commands.keys() | sort | join(', ') }})"
       ask: user_action
       default: '{{ config.cli_default_action }}'
-  when: prepd_cli.commands.keys() | length > 1
+  when: user_action is not defined and prepd_cli.commands.keys() | length > 1
 
 - name: Set user_action to the default when only one command is available
   set_fact:
     user_action: '{{ config.cli_default_action }}'
-  when: prepd_cli.commands.keys() | length < 2
+  when: user_action is not defined and prepd_cli.commands.keys() | length < 2
 
 - name: Fail if the command is invalid
   fail:

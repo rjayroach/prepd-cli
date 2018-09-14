@@ -1,0 +1,28 @@
+---
+- name: 'Create {{ project_dir }}'
+  file:
+    path: '{{ project_dir }}'
+    state: directory
+
+- name: 'Ignore the {{ project_dir }} directory'
+  lineinfile:
+    path: '.gitignore'
+    line: '{{ project_dir }}'
+    state: present
+
+- name: Create the project.yml playbook
+  template:
+    src: project.yml
+    dest: '{{ playbook_dir }}/projects.yml'
+    mode: 0755
+
+- name: Set the manifest content
+  include_tasks: manifest.yml
+  with_items: "{{ generate.types.split(',') }}"
+  loop_control:
+    loop_var: type
+
+- name: Create the manifest
+  template:
+    src: manifest.yml.j2
+    dest: '{{ project_dir }}.yml'

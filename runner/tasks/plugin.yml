@@ -1,15 +1,21 @@
 ---
+- set_fact:
+    plugin_name: '{{ arg_1 }}'
+  when: arg_1 is defined
+
 - prompt:
     msg:
       say: "Install plugin ({{ prepd_cli.config.plugin.keys() | sort | join(', ') }})"
       ask: plugin_name
       default: '{{ prepd_cli.config.plugin.keys() | sort | first }}'
+  when: plugin_name is not defined
 
 - name: Fail if the plugin_name is invalid
   fail:
     msg: "invalid plugin '{{ plugin_name }}'"
   when: plugin_name not in prepd_cli.config.plugin.keys()
 
+# TODO: Change to ansible-galaxy install
 - name: 'Clone the {{ plugin_name }} plugin repository'
   git:
     repo: '{{ prepd_cli.config.plugin[plugin_name].repo }}'
