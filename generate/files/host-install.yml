@@ -7,34 +7,36 @@
   hosts: prepd
   tasks:
     - include_role:
+        name: prepd/machine-config
+      vars:
+        role_spec: {}
+    - include_role:
         name: prepd/virtualbox
     - include_role:
-        name: prepd/vagrant
-    - include_role:
-        name: prepd/packer
+        name: prepd/vagrant/setup
     - include_role:
         name: prepd/prepd-tools
+      vars:
+        role_spec: {}
     - include_role:
         name: prepd/extras
       vars:
-        manifest:
-          # extra_items: '{{ extra_items }}'
-          extra_items:
-            mac:
-              - google-chrome
-              - dropbox
-              - evernote
-              - iterm2
-              - firefox
-              - kindle
-              - postman
-              - skype
-              - slack
-              - spotify
-              - transmission
-              - vlc
-            debian:
-              - google-chrome-stable
+        role_spec:
+          mac:
+            - google-chrome
+            - dropbox
+            - evernote
+            - iterm2
+            - firefox
+            - kindle
+            - postman
+            - skype
+            - slack
+            - spotify
+            - transmission
+            - vlc
+          debian:
+            - google-chrome-stable
 
           extra_items_not_installing:
             - insomniax
@@ -43,10 +45,3 @@
 # TODO: cordova needs some work
 # TODO: developer/setup role contains the list of packages to install, but is not invoked here yet
 # TODO: when the installation is 'standarized' then put all the roles into a summary role in prepd
-
-
-# ---
-# git_user:
-#   name: John Doe Developer
-#   email: email@example.com
-
