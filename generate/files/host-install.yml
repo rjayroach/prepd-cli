@@ -1,8 +1,10 @@
 #!/usr/bin/env ansible-playbook
----
 # NOTE: run with -K to prompt for sudo password
-# NOTE: the order of the roles is important: virtualbox is first b/c it will fail, yadr is next b/c it sets the shell
-# roles installed after that often depend on the shell type which is zsh in the case of yadr
+# NOTE: the order of the playbook is important. Configure developer environment before installing tooling
+# as roles installed after that often depend on the shell type which is zsh in the case of yadr
+---
+- import_playbook: developer.yml
+
 - name: Install base packages on developer machine that will be hosting VMs
   hosts: prepd
   tasks:
@@ -10,24 +12,30 @@
         name: prepd/machine-config
       vars:
         role_spec: {}
+
+    # NOTE: virtualbox is first b/c it will fail when installed on Mac. See:
     - include_role:
         name: prepd/virtualbox
+
     - include_role:
         name: prepd/vagrant/setup
+
     - include_role:
         name: prepd/prepd-tools
       vars:
         role_spec: {}
+
     - include_role:
-        name: prepd/extras
+        name: prepd/host-install
       vars:
         role_spec:
           mac:
-            - google-chrome
             - dropbox
             - evernote
-            - iterm2
             - firefox
+            - google-chrome
+            # - insomniax
+            - iterm2
             - kindle
             - postman
             - skype
@@ -35,13 +43,6 @@
             - spotify
             - transmission
             - vlc
+            - whatsapp
           debian:
             - google-chrome-stable
-
-          extra_items_not_installing:
-            - insomniax
-
-# TODO: put the extra role still has some legacy code; refactor that when installing on linux laptop
-# TODO: cordova needs some work
-# TODO: developer/setup role contains the list of packages to install, but is not invoked here yet
-# TODO: when the installation is 'standarized' then put all the roles into a summary role in prepd
